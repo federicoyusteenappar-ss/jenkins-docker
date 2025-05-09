@@ -5,6 +5,8 @@ pipeline {
 
     agent any
 
+    parameters { string(name: 'BRANCH_TAG', defaultValue: 'main', description: 'Branch or tag to build') }
+
     environment {
 
         GIT_URL = 'https://github.com/federicoyusteenappar-ss/jenkins-docker'

@@ -4,8 +4,11 @@ def GIT_COMMIT = ""
 pipeline {
 
     agent any
-
-    parameters { string(name: 'BRANCH_TAG', defaultValue: 'main', description: 'Branch or tag to build') }
+    
+    parameters { 
+        string(name: 'BRANCH_TAG', defaultValue: 'main', description: 'Branch or tag to build')
+        string(name: 'IMAGE_NAME', defaultValue: 'flask-myapp', description: 'Docker image name') 
+    }
 
     environment {
 
@@ -40,8 +43,15 @@ pipeline {
                  else {
                      env.IMAGE_TAG = "${BRANCH_TAG}"
                  }
-                 
-                 sh 'docker build -t flask-myapp:${IMAGE_TAG} .'
+
+                def variables = [
+                    dockerfileDir: "./",
+                    dockerfileName: "Dockerfile",
+                    buildArgs: "",
+                    image: "${IMAGE_NAME}:" + env.IMAGE_TAG
+                ]
+
+                def image = docker.build(variables.image, "${variables.buildArgs} ${variables.dockerfileDir} -f ${variables.dockerfileName}")
 
                }
             }
